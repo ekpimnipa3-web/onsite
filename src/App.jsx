@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import BookingForm from './components/BookingForm'
 import Calendar from './components/Calendar'
 import AdminPanel from './components/AdminPanel'
@@ -12,10 +12,10 @@ export default function App() {
   
   // 🔒 ระบบล็อกอินสำหรับเจ้าหน้าที่
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false) // เปิด-ปิดตาดูกระจกรหัส
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loginError, setLoginError] = useState('')
 
-  // รหัสผ่านของพยาบาล/เจ้าหน้าที่ (เปลี่ยนได้ตามต้องการ)
   const ADMIN_PASSWORD = 'nurse1234'
 
   const handleBookingComplete = (booking) => {
@@ -26,14 +26,14 @@ export default function App() {
 
   const handleDateSelect = (date) => {
     setSelectedDate(date)
-    setView('book') // เด้งไปหน้ากรอกข้อมูลตามเดิมเมื่อกดเลือกวันในปฏิทิน
+    setView('book')
   }
 
   const handleLoginSubmit = (e) => {
     e.preventDefault()
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true)
-      setView('admin') // รหัสถูก เข้าหน้าจัดการงานทันที
+      setView('admin')
       setLoginError('')
       setPassword('')
     } else {
@@ -46,7 +46,6 @@ export default function App() {
     setView('calendar')
   }
 
-  // ฟังก์ชันช่วยสลับหน้าเมื่อกดปุ่มจัดการงาน (ถ้าล็อกอินแล้วให้เข้าเลย ถ้ายังให้ไปหน้าล็อกอินก่อน)
   const handleAdminNavClick = () => {
     if (isAuthenticated) {
       setView('admin')
@@ -56,28 +55,49 @@ export default function App() {
   }
 
   return (
-    <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', fontFamily: "'Sarabun', sans-serif" }}>
+    <div style={{ backgroundColor: '#f4f7fa', minHeight: '100vh', fontFamily: "'Sarabun', sans-serif", color: '#1e293b' }}>
       
-      {/* 🧭 Header & Nav ดีไซน์ใหม่ สวย คลีน สไตล์โมเดิร์น */}
-      <header style={{ backgroundColor: '#ffffff', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 20px', height: '72px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {/* 🧭 PREMIUM GLASSMORPHIC HEADER */}
+      <header style={{ 
+        backgroundColor: 'rgba(255, 255, 255, 0.9)', 
+        backdropFilter: 'blur(12px)',
+        borderBottom: '1px solid rgba(226, 232, 240, 0.8)', 
+        position: 'sticky', 
+        top: 0, 
+        zIndex: 100,
+        boxShadow: '0 4px 20px -5px rgba(15, 23, 42, 0.03)'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', height: '80px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           
-          {/* โลโก้และชื่อเว็บ */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => setView('calendar')}>
-            <span style={{ fontSize: '28px', backgroundColor: '#eff6ff', padding: '8px', borderRadius: '12px' }}>🏥</span>
+          {/* Brand Logo & Name */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px', cursor: 'pointer' }} onClick={() => setView('calendar')}>
+            <div style={{ 
+              fontSize: '26px', 
+              background: 'linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%)', 
+              padding: '10px', 
+              borderRadius: '16px',
+              boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.4), 0 4px 12px rgba(59, 130, 246, 0.08)'
+            }}>
+              🏥
+            </div>
             <div>
-              <h1 style={{ margin: 0, fontSize: '16px', fontWeight: '700', color: '#1e293b', lineHeight: '1.2' }}>ระบบจองนัดหมาย</h1>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b', fontWeight: '400' }}>เจ้าหน้าที่ลงพื้นที่หน้างาน</p>
+              <h1 style={{ margin: 0, fontSize: '18px', fontWeight: '800', background: 'linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                ระบบจองนัดหมาย
+              </h1>
+              <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: '#64748b', fontWeight: '500', letterSpacing: '0.5px' }}>
+                เจ้าหน้าที่ลงพื้นที่หน้างาน
+              </p>
             </div>
           </div>
 
-          {/* แถบเมนูด้านบน */}
-          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          {/* Navigation Items */}
+          <nav style={{ display: 'flex', gap: '8px', alignItems: 'center', backgroundColor: '#f1f5f9', padding: '6px', borderRadius: '14px' }}>
             <button
               style={{
-                padding: '8px 16px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s',
-                backgroundColor: view === 'calendar' ? '#3b82f6' : 'transparent',
-                color: view === 'calendar' ? '#ffffff' : '#475569',
+                padding: '10px 20px', borderRadius: '10px', border: 'none', fontWeight: '600', fontSize: '14px', cursor: 'pointer', transition: 'all 0.25s ease',
+                backgroundColor: view === 'calendar' ? '#ffffff' : 'transparent',
+                color: view === 'calendar' ? '#1e40af' : '#64748b',
+                boxShadow: view === 'calendar' ? '0 4px 12px rgba(15, 23, 42, 0.05)' : 'none'
               }}
               onClick={() => setView('calendar')}
             >
@@ -86,35 +106,38 @@ export default function App() {
             
             <button
               style={{
-                padding: '8px 16px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s',
-                backgroundColor: view === 'book' ? '#3b82f6' : 'transparent',
-                color: view === 'book' ? '#ffffff' : '#475569',
+                padding: '10px 20px', borderRadius: '10px', border: 'none', fontWeight: '600', fontSize: '14px', cursor: 'pointer', transition: 'all 0.25s ease',
+                backgroundColor: view === 'book' ? '#ffffff' : 'transparent',
+                color: view === 'book' ? '#1e40af' : '#64748b',
+                boxShadow: view === 'book' ? '0 4px 12px rgba(15, 23, 42, 0.05)' : 'none'
               }}
               onClick={() => { setSelectedDate(null); setView('book') }}
             >
               ✏️ จองนัด
             </button>
             
-            {/* ปุ่มเข้าหลังบ้าน (สีพิเศษเพื่อให้เจ้าหน้าที่สังเกตง่าย และเช็กสเตตล็อกอิน) */}
+            <div style={{ width: '1px', height: '20px', backgroundColor: '#cbd5e1', margin: '0 4px' }} />
+
             {!isAuthenticated ? (
               <button
                 style={{
-                  padding: '8px 16px', borderRadius: '8px', fontWeight: '500', fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s',
-                  border: view === 'login' || view === 'admin' ? 'none' : '1px solid #e2e8f0',
-                  backgroundColor: view === 'login' || view === 'admin' ? '#0f172a' : '#ffffff',
-                  color: view === 'login' || view === 'admin' ? '#ffffff' : '#1e293b',
+                  padding: '10px 20px', borderRadius: '10px', border: 'none', fontWeight: '600', fontSize: '14px', cursor: 'pointer', transition: 'all 0.25s ease',
+                  backgroundColor: view === 'login' || view === 'admin' ? '#1e3a8a' : 'transparent',
+                  color: view === 'login' || view === 'admin' ? '#ffffff' : '#475569',
+                  boxShadow: view === 'login' || view === 'admin' ? '0 4px 12px rgba(30, 58, 138, 0.2)' : 'none'
                 }}
                 onClick={handleAdminNavClick}
               >
                 🔑 สำหรับเจ้าหน้าที่
               </button>
             ) : (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <button
                   style={{
-                    padding: '8px 16px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '14px', cursor: 'pointer',
-                    backgroundColor: view === 'admin' ? '#0f172a' : '#f1f5f9',
-                    color: view === 'admin' ? '#ffffff' : '#1e293b',
+                    padding: '10px 16px', borderRadius: '10px', border: 'none', fontWeight: '600', fontSize: '14px', cursor: 'pointer', transition: 'all 0.25s ease',
+                    backgroundColor: view === 'admin' ? '#1e3a8a' : 'transparent',
+                    color: view === 'admin' ? '#ffffff' : '#475569',
+                    boxShadow: view === 'admin' ? '0 4px 12px rgba(30, 58, 138, 0.2)' : 'none'
                   }}
                   onClick={() => setView('admin')}
                 >
@@ -122,12 +145,13 @@ export default function App() {
                 </button>
                 <button
                   style={{
-                    padding: '8px 12px', borderRadius: '8px', border: 'none', fontWeight: '500', fontSize: '14px', cursor: 'pointer',
-                    backgroundColor: '#fee2e2', color: '#ef4444'
+                    padding: '10px 14px', borderRadius: '10px', border: 'none', fontWeight: '600', fontSize: '14px', cursor: 'pointer',
+                    backgroundColor: '#fee2e2', color: '#ef4444', transition: 'all 0.2s'
                   }}
                   onClick={handleLogout}
+                  title="ออกจากระบบ"
                 >
-                  🚪 ออกระบบ
+                  🚪
                 </button>
               </div>
             )}
@@ -136,22 +160,30 @@ export default function App() {
         </div>
       </header>
 
-      {/* 💻 โซนเนื้อหาหลักกลางหน้าจอ */}
-      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '30px 20px' }}>
+      {/* 💻 MAIN CONTAINER */}
+      <main style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px' }}>
         
         {/* หน้าปฏิทิน */}
         {view === 'calendar' && (
-          <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ 
+            backgroundColor: '#ffffff', padding: '32px', borderRadius: '24px', 
+            boxShadow: '0 10px 30px -5px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.02)',
+            border: '1px solid rgba(241, 245, 249, 0.8)'
+          }}>
             <Calendar key={refreshKey} onDateSelect={handleDateSelect} />
           </div>
         )}
 
-        {/* หน้ากรอกข้อมูลแบบฟอร์มจองนัด (เด้งมาหน้านี้เดี่ยว ๆ ตามสไตล์เดิมของคุณ) */}
+        {/* หน้าแบบฟอร์มกรอกข้อมูลการจอง */}
         {view === 'book' && (
-          <div style={{ maxWidth: '650px', margin: '0 auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-            <div style={{ borderBottom: '1px solid #f1f5f9', paddingBottom: '16px', marginBottom: '24px' }}>
-              <h2 style={{ margin: 0, fontSize: '18px', fontWeight: '600', color: '#1e293b' }}>✍️ กรอกรายละเอียดข้อมูลการจอง</h2>
-              <p style={{ margin: '4px 0 0 0', fontSize: '13px', color: '#64748b' }}>โปรดระบุข้อมูลส่วนตัวและเลือกอุปกรณ์ที่ต้องการจองนัดหมาย</p>
+          <div style={{ 
+            maxWidth: '680px', margin: '0 auto', backgroundColor: '#ffffff', padding: '40px', 
+            borderRadius: '24px', boxShadow: '0 20px 40px -10px rgba(15, 23, 42, 0.06)',
+            border: '1px solid rgba(241, 245, 249, 0.8)'
+          }}>
+            <div style={{ borderBottom: '2px solid #f1f5f9', paddingBottom: '20px', marginBottom: '28px' }}>
+              <h2 style={{ margin: 0, fontSize: '22px', fontWeight: '800', color: '#0f172a' }}>✍️ ข้อมูลการจองนัดหมาย</h2>
+              <p style={{ margin: '6px 0 0 0', fontSize: '14px', color: '#64748b' }}>โปรดตรวจสอบวันนัดหมาย กรอกประวัติตนเอง และอุปกรณ์แพทย์ที่ประสงค์ขอใช้งาน</p>
             </div>
             <BookingForm
               preSelectedDate={selectedDate}
@@ -161,47 +193,79 @@ export default function App() {
           </div>
         )}
 
-        {/* หน้าจอฟอร์ม Login สำหรับพยาบาล */}
+        {/* หน้าจอความปลอดภัยล็อกอินแอดมินพยาบาล */}
         {view === 'login' && (
-          <div style={{ maxWidth: '400px', margin: '60px auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
-            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-              <span style={{ fontSize: '36px' }}>🔑</span>
-              <h2 style={{ margin: '12px 0 4px 0', fontSize: '18px', fontWeight: '600', color: '#1e293b' }}>ระบบเข้าสู่หลังบ้าน</h2>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>สำหรับเจ้าหน้าที่พยาบาลและแอดมินเท่านั้น</p>
-            </div>
-            <form onSubmit={handleLoginSubmit}>
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '500', color: '#475569' }}>กรอกรหัสผ่านเพื่อยืนยันตัวตน:</label>
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="รหัสผ่าน (พยาบาล)"
-                  style={{ width: '100%', padding: '10px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', outline: 'none', boxSizing: 'border-box', fontSize: '14px' }}
-                  required
-                />
+          <div style={{ 
+            maxWidth: '420px', margin: '60px auto', backgroundColor: '#ffffff', padding: '40px', 
+            borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.08)',
+            border: '1px solid rgba(241, 245, 249, 0.9)'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+              <div style={{ width: '72px', height: '72px', backgroundColor: '#f0fdf4', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+                <span style={{ fontSize: '32px' }}>🔒</span>
               </div>
-              {loginError && <p style={{ color: '#ef4444', fontSize: '13px', margin: '0 0 16px 0', fontWeight: '500' }}>{loginError}</p>}
+              <h2 style={{ margin: '0 0 6px 0', fontSize: '20px', fontWeight: '800', color: '#0f172a' }}>พื้นที่เฉพาะเจ้าหน้าที่</h2>
+              <p style={{ margin: 0, fontSize: '13px', color: '#64748b', fontWeight: '500' }}>กรอกรหัสยืนยันตนเพื่อเปิดแดชบอร์ดพยาบาล</p>
+            </div>
+            
+            <form onSubmit={handleLoginSubmit}>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: '600', color: '#334155' }}>รหัสผ่านความปลอดภัย:</label>
+                <div style={{ position: 'relative' }}>
+                  <input 
+                    type={showPassword ? "text" : "password"} 
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    style={{ 
+                      width: '100%', padding: '12px 45px 12px 16px', borderRadius: '12px', 
+                      border: '1.5px solid #cbd5e1', outline: 'none', boxSizing: 'border-box', 
+                      fontSize: '15px', transition: 'all 0.2s', backgroundColor: '#f8fafc'
+                    }}
+                    required
+                  />
+                  {/* ปุ่มกดเปิดปิดรูปตา ดูรหัสผ่าน */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', border: 'none', background: 'none', cursor: 'pointer', fontSize: '16px', color: '#64748b' }}
+                  >
+                    {showPassword ? "👁️" : "🙈"}
+                  </button>
+                </div>
+              </div>
+              {loginError && <p style={{ color: '#ef4444', fontSize: '13px', margin: '0 0 20px 0', fontWeight: '600', textAlign: 'center' }}>{loginError}</p>}
               <button 
                 type="submit" 
-                style={{ width: '100%', padding: '10px', backgroundColor: '#0f172a', color: '#ffffff', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '500', fontSize: '14px' }}
+                style={{ 
+                  width: '100%', padding: '12px', backgroundColor: '#1e3a8a', color: '#ffffff', 
+                  border: 'none', borderRadius: '12px', cursor: 'pointer', fontWeight: '600', 
+                  fontSize: '15px', boxShadow: '0 4px 12px rgba(30, 58, 138, 0.15)', transition: 'all 0.2s' 
+                }}
               >
-                เข้าสู่หน้าจัดการงาน
+                ยืนยันเพื่อเข้าสู่ระบบ
               </button>
             </form>
           </div>
         )}
 
-        {/* หน้าแผงควบคุมเจ้าหน้าที่ (Admin) */}
+        {/* หน้าจัดการงานหลักหลังบ้าน */}
         {view === 'admin' && (
-          <div style={{ backgroundColor: '#ffffff', padding: '24px', borderRadius: '16px', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ 
+            backgroundColor: '#ffffff', padding: '32px', borderRadius: '24px', 
+            boxShadow: '0 10px 30px -5px rgba(15, 23, 42, 0.04)',
+            border: '1px solid rgba(241, 245, 249, 0.8)'
+          }}>
             <AdminPanel onRefresh={() => setRefreshKey(k => k + 1)} />
           </div>
         )}
 
-        {/* หน้าแจ้งเตือนเมื่อจองนัดสำเร็จ */}
+        {/* หน้าจอบันทึกสำเร็จ */}
         {view === 'success' && (
-          <div style={{ maxWidth: '550px', margin: '0 auto', backgroundColor: '#ffffff', padding: '32px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)' }}>
+          <div style={{ 
+            maxWidth: '580px', margin: '0 auto', backgroundColor: '#ffffff', padding: '40px', 
+            borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(15, 23, 42, 0.05)' 
+          }}>
             <BookingSuccess
               booking={successData}
               onBackToCalendar={() => setView('calendar')}
