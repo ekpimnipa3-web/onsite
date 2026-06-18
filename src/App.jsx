@@ -84,10 +84,23 @@ function App() {
       {/* 💻 ส่วนเนื้อหาหลักเปลี่ยนตามสถานะหน้าจอ (View) */}
       <main style={{ maxWidth: '1200px', margin: '0 auto' }}>
         
-        {/* หน้าที่ 1: หน้าบุคคลทั่วไป (ดูปฏิทิน / จองคิว) */}
+/* หน้าที่ 1: หน้าบุคคลทั่วไป (ดูปฏิทิน / จองคิว) */
         {view === 'user' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-            <Calendar />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '40px' }}>
+            
+            {/* ซีกที่ 1: แสดงปฏิทิน */}
+            <div style={{ backgroundColor: '#fff', padding: '25px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <Calendar />
+            </div>
+
+            {/* ซีกที่ 2: ฟอร์มกรอกข้อมูลจองคิวที่หายไป เอากลับมาตรงนี้แล้วครับ ✨ */}
+            <div style={{ backgroundColor: '#fff', padding: '30px', borderRadius: '16px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
+              <h2 style={{ marginTop: 0, marginBottom: '20px', fontSize: '1.25rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '12px' }}>
+                ✍️ ฟอร์มกรอกรายละเอียดการจองนัดหมาย
+              </h2>
+              <BookingForm />
+            </div>
+
           </div>
         )}
 
